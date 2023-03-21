@@ -1,0 +1,71 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "clean",
+            "type": "shell",
+            "group": "build",
+            "command": "rm -r build",
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            },
+        },
+        {
+            "label": "create build/",
+            "type": "shell",
+            "group": "build",
+            "command": "[ ! -d build/ ] && mkdir build/; true",
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            },
+        },
+        {
+            "label": "configure",
+            "type": "shell",
+            "group": "build",
+            "command": "cmake ..",// -DCMAKE_BUILD_TYPE=debug",
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+            "dependsOn": [
+                "create build/"
+            ]
+        },
+        {
+            "label": "build",
+            "type": "shell",
+            "group": "build",
+            "command": "cmake --build . --parallel",
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+        },
+        {
+            "label": "configure & build",
+            "type": "shell",
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "configure",
+                "build"
+            ]
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "group": "test",
+            "command": "ctest -V --stop-on-failure",
+            "options": {
+                "cwd": "${workspaceFolder}/build/"
+            },
+            "dependsOn": [
+                "configure & build"
+            ]
+        }
+    ]
+}
