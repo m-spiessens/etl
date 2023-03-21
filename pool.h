@@ -44,9 +44,9 @@ template<typename DataType>
 class Pool
 {
 private:
-	uint16_t _size;
-	DataType* _data;
-	Queue<DataType*> _available;
+	size_t size;
+	DataType* data;
+	Queue<DataType*> available;
 
 public:
 	/**
@@ -56,14 +56,14 @@ public:
 	 *
 	 * \param size The size of the pool in number of DataType.
 	 */
-	explicit Pool(uint16_t size) :
-			_size(size),
-			_data(new DataType[_size]),
-			_available(Queue<DataType*>(_size))
+	explicit Pool(size_t size) :
+			size(size),
+			data(new DataType[size]),
+			available(Queue<DataType*>(size))
 	{
-		for (uint_fast16_t i = 0; i < _size; i++)
+		for (size_t i = 0; i < size; i++)
 		{
-			_available.enqueue(&_data[i]);
+			available.enqueue(&data[i]);
 		}
 	}
 
@@ -74,7 +74,7 @@ public:
 	 */
 	~Pool()
 	{
-		delete[] _data;
+		delete[] data;
 	}
 
 	/**
@@ -82,7 +82,7 @@ public:
 	 */
 	bool haveAvailable() const
 	{
-		return !_available.empty();
+		return !available.empty();
 	}
 
 	/**
@@ -98,7 +98,7 @@ public:
 	{
 		DataType* take = nullptr;
 
-		_available.dequeue(take);
+		available.dequeue(take);
 
 		return take;
 	}
@@ -112,7 +112,7 @@ public:
 	 */
 	bool release(DataType& element)
 	{
-		return _available.enqueue(&element);
+		return available.enqueue(&element);
 	}
 };
 

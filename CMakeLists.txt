@@ -20,6 +20,7 @@ target_compile_options(test_memorychain
 PRIVATE
     -std=c++20
     -pedantic
+    -Wall
 )
 
 add_test(NAME test_memorychain COMMAND test_memorychain)

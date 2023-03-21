@@ -24,6 +24,7 @@
 #ifndef ETL_QUEUE_H_
 #define ETL_QUEUE_H_
 
+#include <assert.h>
 #include <malloc.h>
 #include <string.h>
 
@@ -38,9 +39,9 @@ namespace // private
 class GenericQueue
 {
 private:
-	uint8_t* data;
-	const uint16_t elementSize;
+	const size_t elementSize;
 	const size_t elementCount;
+	uint8_t* data;
 	std::atomic<uint16_t> first = 0;
 	std::atomic<uint16_t> last = 0;
 	std::atomic<uint16_t> enqueued = 0;
@@ -54,10 +55,11 @@ protected:
 	 *
 	 * \param size The size of the queue in number of DataType.
 	 */
-	explicit GenericQueue(uint16_t elementCount, uint16_t elementSize) :
+	explicit GenericQueue(size_t elementCount, size_t elementSize) :
 			elementCount(elementCount),
 			elementSize(elementSize)
 	{
+		assert(elementCount < UINT16_MAX);
 		data = (uint8_t*)malloc(elementCount * elementSize);
 	}
 
