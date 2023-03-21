@@ -1,5 +1,7 @@
 # Embedded Template Library (etl)
 
+![build test](https://github.com/m-spiessens/etl/actions/workflows/ci.yml/badge.svg)
+
 Want to develop in C++ on lightweight microcontrollers? This is what you need.
 
 A simple C++ implementation for a linked list of memory fragments, a queue and a pool.
