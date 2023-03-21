@@ -25,7 +25,7 @@
             "label": "configure",
             "type": "shell",
             "group": "build",
-            "command": "cmake ..",// -DCMAKE_BUILD_TYPE=debug",
+            "command": "cmake .. -DCMAKE_BUILD_TYPE=debug",
             "options": {
                 "cwd": "${workspaceFolder}/build/"
             },

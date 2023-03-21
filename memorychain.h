@@ -21,8 +21,8 @@
  * SOLUTION.
  */
 
-#ifndef MEMORYCHAIN_H_
-#define MEMORYCHAIN_H_
+#ifndef ETL_MEMORYCHAIN_H_
+#define ETL_MEMORYCHAIN_H_
 
 #include <stdint.h>
 
@@ -210,4 +210,4 @@ size_t MemoryChain<T>::length() const
 
 } // namespace My
 
-#endif /* MEMORYCHAIN_H_ */
+#endif // ETL_MEMORYCHAIN_H_

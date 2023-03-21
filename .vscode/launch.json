@@ -5,10 +5,60 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "memorychain",
+            "name": "test_memorychain",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/memorychain",
+            "program": "${workspaceFolder}/build/test_memorychain",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "test_queue",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/test_queue",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "test_pool",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/test_pool",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
