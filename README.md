@@ -1,12 +1,12 @@
 # Embedded Template Library (etl)
 
-A simple C++ implementation for a linked list of memory fragments.
-Perfect for concatenating pieces of memory without unnecessary copying.
-For example, message encapsulation in a communication stack.
+Want to develop in C++ on lightweight microcontrollers? This is what you need.
 
-It's header-only, just copy memorychain.h in your project!
+A simple C++ implementation for a linked list of memory fragments, a queue and a pool.
 
 ## Get started
+
+It's header-only, just copy the header files in your project.
 
 ### VS code:
 
