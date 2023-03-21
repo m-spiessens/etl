@@ -60,7 +60,7 @@ protected:
 			elementSize(elementSize)
 	{
 		assert(elementCount < UINT16_MAX);
-		data = (uint8_t*)malloc(elementCount * elementSize);
+		data = reinterpret_cast<uint8_t*>(malloc(elementCount * elementSize));
 	}
 
 	/**

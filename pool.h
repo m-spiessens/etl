@@ -58,7 +58,7 @@ public:
 	 */
 	explicit Pool(size_t size) :
 			size(size),
-			data(new DataType[size]),
+			data(reinterpret_cast<DataType*>(malloc(size * sizeof(DataType)))),
 			available(Queue<DataType*>(size))
 	{
 		for (size_t i = 0; i < size; i++)
@@ -74,7 +74,7 @@ public:
 	 */
 	~Pool()
 	{
-		delete[] data;
+		free(data);
 	}
 
 	/**
