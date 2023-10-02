@@ -2,65 +2,88 @@ cmake_minimum_required(VERSION 3.22)
 
 project(etl)
 
-include(CTest)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable(test_memorychain)
+add_library(etl INTERFACE)
 
-target_include_directories(test_memorychain
-PRIVATE
+target_include_directories(etl
+INTERFACE
     ./
 )
 
-target_sources(test_memorychain
-PRIVATE
-    test_memorychain.cpp
-)
+if(${CMAKE_SYSTEM_NAME} STREQUAL Linux)
 
-target_compile_options(test_memorychain
-PRIVATE
-    -std=c++20
-    -pedantic
-    -Wall
-)
+    include(CTest)
 
-add_test(NAME test_memorychain COMMAND test_memorychain)
+    add_executable(test_memorychain)
+    add_test(NAME test_memorychain COMMAND test_memorychain)
 
-add_executable(test_queue)
+    target_sources(test_memorychain
+    PRIVATE
+        test_memorychain.cpp
+    )
 
-target_include_directories(test_queue
-PRIVATE
-    ./
-)
+    target_link_libraries(test_memorychain
+    PRIVATE
+        etl
+    )
 
-target_sources(test_queue
-PRIVATE
-    test_queue.cpp
-)
+    target_compile_options(test_memorychain
+    PRIVATE
+        -pedantic
+        -Wall
+        -Wextra
+    )
 
-target_compile_options(test_queue
-PRIVATE
-    -std=c++20
-    -pedantic
-)
+    add_executable(test_queue)
+    add_test(NAME test_queue COMMAND test_queue)
 
-add_test(NAME test_queue COMMAND test_queue)
+    target_include_directories(test_queue
+    PRIVATE
+        ./
+    )
 
-add_executable(test_pool)
+    target_sources(test_queue
+    PRIVATE
+        test_queue.cpp
+    )
 
-target_include_directories(test_pool
-PRIVATE
-    ./
-)
+    target_link_libraries(test_queue
+    PRIVATE
+        etl
+    )
 
-target_sources(test_pool
-PRIVATE
-    test_pool.cpp
-)
+    target_compile_options(test_queue
+    PRIVATE
+        -pedantic
+        -Wall
+        -Wextra
+    )
 
-target_compile_options(test_pool
-PRIVATE
-    -std=c++20
-    -pedantic
-)
+    add_executable(test_pool)
+    add_test(NAME test_pool COMMAND test_pool)
 
-add_test(NAME test_pool COMMAND test_pool)
+    target_include_directories(test_pool
+    PRIVATE
+        ./
+    )
+
+    target_sources(test_pool
+    PRIVATE
+        test_pool.cpp
+    )
+
+    target_link_libraries(test_pool
+    PRIVATE
+        etl
+    )
+
+    target_compile_options(test_pool
+    PRIVATE
+        -pedantic
+        -Wall
+        -Wextra
+    )
+
+endif()

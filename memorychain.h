@@ -146,7 +146,7 @@ void MemoryChain<T>::takeSome(T* taken, size_t& length)
         length -= fragment.length;
         fragment.length = 0;
 
-        if(_next != nullptr && length >= 0)
+        if(_next != nullptr && length > 0)
         {
             *this = *_next;
             takeSome(taken, length);
