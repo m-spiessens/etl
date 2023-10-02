@@ -39,8 +39,8 @@ namespace // private
 class GenericQueue
 {
 private:
-	const size_t elementSize;
 	const size_t elementCount;
+	const size_t elementSize;
 	uint8_t* data;
 	std::atomic<uint16_t> first = 0;
 	std::atomic<uint16_t> last = 0;
