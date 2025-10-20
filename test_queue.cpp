@@ -2,12 +2,15 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "queue.h"
+#include "etl/test.h"
+
+#include "etl/queue.h"
 
 typedef etl::Queue<uint8_t> Queue;
 
 auto main() -> int
 {
+    TEST("etl::Queue");
     {
         Queue queue(3);
 
@@ -95,7 +98,7 @@ auto main() -> int
 
         assert(queue.elements() == 0);
 
-        for(size_t i = 0; i < UINT16_MAX; i++)
+        for(std::size_t i = 0; i < UINT16_MAX; i++)
         {
             bool success = queue.enqueue(9);
             assert(success);

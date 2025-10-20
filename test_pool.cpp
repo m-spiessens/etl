@@ -2,12 +2,15 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "pool.h"
+#include "etl/test.h"
+
+#include "etl/pool.h"
 
 typedef etl::Pool<uint8_t> Pool;
 
 auto main() -> int
 {
+    TEST("etl::Pool");
     {
         Pool pool(2);
 
