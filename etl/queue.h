@@ -1,6 +1,6 @@
 /* The MIT License (MIT)
  *
- * Copyright (c) 2021 Mathias Spiessens
+ * Copyright (c) 2025 Mathias Spiessens
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software, hardware and associated documentation files (the "Solution"), to deal
@@ -33,19 +33,19 @@
 namespace etl
 {
 
-namespace // private
+namespace doNotUse
 {
 
 class GenericQueue
 {
 private:
-	const size_t elementCount;
-	const size_t elementSize;
+	const std::size_t elementCount;
+	const std::size_t elementSize;
 	uint8_t* data;
-	std::atomic<uint16_t> first = 0;
-	std::atomic<uint16_t> last = 0;
-	std::atomic<uint16_t> enqueued = 0;
-	std::atomic<uint16_t> dequeued = 0;
+	std::atomic<uint16_t> first{ 0 };
+	std::atomic<uint16_t> last{ 0 };
+	std::atomic<uint16_t> enqueued{ 0 };
+	std::atomic<uint16_t> dequeued{ 0 };
 
 protected:
 	/**
@@ -55,7 +55,7 @@ protected:
 	 *
 	 * \param size The size of the queue in number of DataType.
 	 */
-	explicit GenericQueue(size_t elementCount, size_t elementSize) :
+	explicit GenericQueue(std::size_t elementCount, std::size_t elementSize) :
 			elementCount(elementCount),
 			elementSize(elementSize)
 	{
@@ -84,17 +84,15 @@ protected:
 	 */
 	bool enqueue(const void* element)
 	{
-		bool success = false;
+		bool success = !full();
 
-		if (!full())
+		if (success)
 		{
 			memcpy(&data[last * elementSize], element, elementSize);
 
 			last = (last == size() - 1) ? 0 : last + 1;
 
 			enqueued++;
-
-			success = true;
 		}
 
 		return success;
@@ -112,17 +110,15 @@ protected:
 	 */
 	bool dequeue(void* element)
 	{
-		bool success = false;
+		bool success = !empty();
 
-		if (!empty())
+		if (success)
 		{
 			memcpy(element , &data[first * elementSize], elementSize);
 
 			first = (first == size() - 1) ? 0 : first + 1;
 
 			dequeued++;
-
-			success = true;
 		}
 
 		return success;
@@ -140,9 +136,9 @@ protected:
 	 */
 	bool peek(void* element) const
 	{
-		bool success = false;
+		bool success = !empty();
 
-		if (!empty())
+		if (success)
 		{
 			memcpy(element , &data[first * elementSize], elementSize);
 
@@ -168,28 +164,28 @@ public:
 		return !empty();
 	}
 
-	size_t elements() const
+	std::size_t elements() const
 	{
 		int32_t delta = static_cast<int32_t>(enqueued) - static_cast<int32_t>(dequeued);
 
-		return static_cast<size_t>((delta >= 0) ? delta : delta + UINT16_MAX + 1);
+		return static_cast<std::size_t>((delta >= 0) ? delta : delta + UINT16_MAX + 1);
 	}
 
-	size_t size() const
+	std::size_t size() const
 	{
 		return elementCount;
 	}
 };
 
-} // namespace // private
+} // namespace doNotUse
 
 template<typename Type>
 class Queue : 
-		public GenericQueue
+		public doNotUse::GenericQueue
 {
 public:
-	explicit Queue(size_t size) :
-			GenericQueue(size, sizeof(Type))
+	explicit Queue(std::size_t size) :
+			doNotUse::GenericQueue(size, sizeof(Type))
 	{
 	}
 
@@ -204,7 +200,7 @@ public:
 	 */
 	bool enqueue(const Type& element)
 	{
-		return GenericQueue::enqueue(&element);
+		return doNotUse::GenericQueue::enqueue(&element);
 	}
 	/**
 	 * \brief Dequeue an element of DataType.
@@ -218,7 +214,7 @@ public:
 	 */
 	bool dequeue(Type& element)
 	{
-		return GenericQueue::dequeue(&element);
+		return doNotUse::GenericQueue::dequeue(&element);
 	}
 	
 	/**
@@ -233,7 +229,91 @@ public:
 	 */
 	bool peek(Type& element) const
 	{
-		return GenericQueue::peek(&element);
+		return doNotUse::GenericQueue::peek(&element);
+	}
+};
+
+template<>
+class Queue<void>
+{
+private:
+	std::atomic<uint16_t> enqueued = 0;
+	std::atomic<uint16_t> dequeued = 0;
+	const std::size_t elementCount;
+
+public:
+	explicit Queue(std::size_t size) :
+			elementCount(size)
+	{
+	}
+
+	bool empty() const
+	{
+		return (enqueued == dequeued);
+	}
+
+	bool full() const
+	{
+		return (enqueued == static_cast<uint16_t>(dequeued + size()));
+	}
+
+	bool peek() const
+	{
+		return !empty();
+	}
+
+	std::size_t elements() const
+	{
+		int32_t delta = static_cast<int32_t>(enqueued) - static_cast<int32_t>(dequeued);
+
+		return static_cast<std::size_t>((delta >= 0) ? delta : delta + UINT16_MAX + 1);
+	}
+
+	std::size_t size() const
+	{
+		return elementCount;
+	}
+
+	/**
+	 * \brief Enqueue.
+	 *
+	 * Can be called concurrently with respect to dequeue().
+	 * If the queue is full the given element is not added.
+	 *
+	 * \return True
+	 */
+	bool enqueue()
+	{
+		bool success = !full();
+
+		if(success)
+		{
+			enqueued++;
+		}
+
+		return success;
+	}
+
+	/**
+	 * \brief Dequeue an element of DataType.
+	 *
+	 * Can be called concurrently with respect to enqueue().
+	 *
+	 * \param element [output] The dequeued element.
+	 * 		The return value indicates whether the element is valid.
+	 * \return An element was successfully dequeued.
+	 * 		Thus the element output parameter has a valid value.
+	 */
+	bool dequeue()
+	{
+		bool success = peek();
+
+		if(success)
+		{
+			dequeued++;
+		}
+
+		return success;
 	}
 };
 

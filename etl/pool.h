@@ -1,6 +1,6 @@
 /* The MIT License (MIT)
  *
- * Copyright (c) 2021 Mathias Spiessens
+ * Copyright (c) 2025 Mathias Spiessens
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software, hardware and associated documentation files (the "Solution"), to deal
@@ -44,7 +44,7 @@ template<typename DataType>
 class Pool
 {
 private:
-	size_t size;
+	std::size_t size;
 	DataType* data;
 	Queue<DataType*> available;
 
@@ -56,13 +56,14 @@ public:
 	 *
 	 * \param size The size of the pool in number of DataType.
 	 */
-	explicit Pool(size_t size) :
+	explicit Pool(std::size_t size) :
 			size(size),
 			data(reinterpret_cast<DataType*>(malloc(size * sizeof(DataType)))),
 			available(Queue<DataType*>(size))
 	{
-		for (size_t i = 0; i < size; i++)
+		for (std::size_t i = 0; i < size; i++)
 		{
+			new (&data[i]) DataType();
 			available.enqueue(&data[i]);
 		}
 	}
@@ -74,6 +75,11 @@ public:
 	 */
 	~Pool()
 	{
+		for (std::size_t i = 0; i < size; i++)
+		{
+			data[i].~DataType();
+		}
+
 		free(data);
 	}
 
