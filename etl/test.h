@@ -24,6 +24,8 @@
  #if !defined(ETL_TEST_H)
 #define ETL_TEST_H
 
+#include <stdint.h>
+
 #include <iomanip>
 #include <iostream>
 #include <string>
